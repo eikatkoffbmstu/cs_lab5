@@ -13,6 +13,11 @@ class MyMatrix
         this.columns = columns;
         matrix = new int[rows, columns];
 
+        Fill(minValue, maxValue);
+    }
+
+    public void Fill(int minValue, int maxValue)
+    {
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < columns; j++)
@@ -45,7 +50,7 @@ class MyMatrix
                 {
                     if (i >= rows || j >= columns)
                     {
-                        newMatrix[i, j] = random.Next(minValue, maxValue);
+                        newMatrix[i, j] = random.Next(minValue, maxValue + 1);
                     }
                 }
             }
@@ -77,9 +82,9 @@ class MyMatrix
     {
         get
         {
-            if (index1 >= 0 && index1 - 1 < rows && index2 >= 0 && index2 - 1 < columns)
+            if (index1 >= 0 && index1 < rows && index2 >= 0 && index2 < columns)
             {
-                return matrix[index1 - 1, index2 - 1];
+                return matrix[index1, index2];
             }
             else
             {
@@ -88,9 +93,9 @@ class MyMatrix
         }
         set
         {
-            if (index1 >= 0 && index1 - 1 < rows && index2 >= 0 && index2 - 1 < columns)
+            if (index1 >= 0 && index1 < rows && index2 >= 0 && index2 < columns)
             {
-                matrix[index1 - 1, index2 - 1] = value;
+                matrix[index1, index2] = value;
             }
             else
             {
@@ -151,5 +156,4 @@ class lab051
         Console.WriteLine("Измененная матрица:");
         matrix.Print();
     }
-
 }
