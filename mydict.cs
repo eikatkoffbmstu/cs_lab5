@@ -1,69 +1,36 @@
 using System;
 using System.Collections;
 
-public class MyList<T> : IEnumerable<T>
+public class MyDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
 {
-    private T[] items;
-    private int count;
+    private List<KeyValuePair<TKey, TValue>> items = new List<KeyValuePair<TKey, TValue>>();
 
-    public MyList()
+    public void Add(TKey key, TValue value)
     {
-        items = new T[0];
-        count = 0;
+        items.Add(new KeyValuePair<TKey, TValue>(key, value));
     }
 
-    public MyList(params T[] initialValues)
-    {
-        items = new T[initialValues.Length];
-        Array.Copy(initialValues, items, initialValues.Length);
-        count = initialValues.Length;
-    }
-
-    public MyList(IEnumerable<T> collection)
-    {
-        items = new T[0];
-        foreach (var item in collection)
-        {
-            Add(item);
-        }
-    }
-
-    public void Add(T item)
-    {
-        if (count == items.Length)
-        {
-            int newCapacity = count == 0 ? 4 : count * 2;
-            T[] newItems = new T[newCapacity];
-            Array.Copy(items, newItems, count);
-            items = newItems;
-        }
-
-        items[count] = item;
-        count++;
-    }
-
-    public T this[int index]
+    public TValue this[TKey key]
     {
         get
         {
-            if (index < 0 || index >= count)
-                throw new IndexOutOfRangeException();
-
-            return items[index];
+            var item = items.Find(i => EqualityComparer<TKey>.Default.Equals(i.Key, key));
+            if (item.Equals(default(KeyValuePair<TKey, TValue>)))
+            {
+                throw new KeyNotFoundException($"The key '{key}' was not found in the dictionary.");
+            }
+            return item.Value;
         }
     }
 
     public int Count
     {
-        get { return count; }
+        get { return items.Count; }
     }
 
-    public IEnumerator<T> GetEnumerator()
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
     {
-        for (int i = 0; i < count; i++)
-        {
-            yield return items[i];
-        }
+        return items.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -72,20 +39,29 @@ public class MyList<T> : IEnumerable<T>
     }
 }
 
-class Program
+class lab053
 {
     static void Main()
     {
-        MyList<int> myList = new MyList<int> { 1, 2, 3, 4, 5 };
-
-        myList.Add(678);
-
-        Console.WriteLine($"Our elements i - 1, cheeeeck:\n");
-        foreach (var item in myList)
+        MyDictionary<string, int> myDict = new MyDictionary<string, int>
         {
-            Console.WriteLine($"Element: {item}");
-        }
+            { "one", 1 },
+            { "two", 2 },
+            { "three", 3 }
+        };
 
-        Console.WriteLine($"\nTotal number of elements: {myList.Count}");
+        //MyDictionary<string, int> myDict = new MyDictionary<string, int>();
+        //myDict.Add("one", 1);
+        //myDict.Add("two", 2);
+        //myDict.Add("three", 3);
+
+        Console.WriteLine("Count: " + myDict.Count);
+        Console.WriteLine("\nValue for key 'two': " + myDict["two"]);
+
+        Console.WriteLine("\nIterating through the dictionary:");
+        foreach (var kvp in myDict)
+        {
+            Console.WriteLine($"   {kvp.Key}: {kvp.Value}");
+        }
     }
 }
