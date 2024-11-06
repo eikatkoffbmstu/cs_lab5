@@ -155,5 +155,8 @@ class lab051
 
         Console.WriteLine("Измененная матрица:");
         matrix.Print();
+        MyMatrix matrix = new MyMatrix(3, 3, 1, 10);
+        matrix[0, 0] = 5; // Используется мутатор для установки значения
+        int value = matrix[0, 0]; // Используется аксессор для получения значения
     }
 }
